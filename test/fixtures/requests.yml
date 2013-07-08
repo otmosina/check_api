@@ -1,0 +1,13 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+one:
+  partner_id: MyString
+  integer: MyString
+  url: MyString
+  parametres: MyString
+
+two:
+  partner_id: MyString
+  integer: MyString
+  url: MyString
+  parametres: MyString

@@ -1,4 +1,12 @@
 CheckApi::Application.routes.draw do
+  
+  match 'request/get_out_request' => 'requests#get_out_request'
+  resources :requests do
+    
+  end  
+
+
+
   resources :partners
 
 

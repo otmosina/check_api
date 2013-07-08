@@ -1,0 +1,174 @@
+
+<!-- Example 
+<select id="partner_app_id" name="partner[app_id]"><option value="1" data-secret="1">1</option>
+<option value="2" data-secret="2">2</option>
+-->
+<script>
+
+function signature(params_str,secret){
+
+  mas = []  
+  mas = params_str.split("&");
+  mas.sort();
+  var result_str = mas.join('&')+secret;
+  var result_signature = hex_md5(result_str);
+  return result_signature;
+}
+
+  /*
+$(function(){
+  $("#get_sig").click(function(){ 
+
+  app_id =  $("#partner_app_id option:selected").html();  
+
+  secret = $("#partner_app_id option:selected").attr("data-secret");
+  url = $("#url_params").val();
+  params = $("#params_string").val(); 
+  if (params.length == 0) {
+      params = "app_id="+app_id+params;
+  } else {
+      params = "app_id="+app_id+'&'+params;
+  }
+
+  sig = signature(params, secret)
+  
+  result_request = url+'?'+params+'&sig='+sig 
+  
+    $("#out_request").html(result_request);
+    });
+
+})
+*/
+
+
+$(function(){
+  $("#make_request").click(function(){
+  full_request_with_sign = $("#out_request_sign").html();
+  if  (full_request_with_sign.length > 2) {  
+    $.ajax({
+      Datatype: 'json',
+      type: 'GET',
+      data: "url_request_param=http://videomore.ru/api/projects.json?app_id=dunefcc44a6506c200ff7731acd789af9d3d",      
+      url: "<%= request_get_out_request_path %>",
+      complete: function(data){
+        $("#get_out_request").html(data.responseText);
+      } 
+    });
+  }  else {
+    alert('Нужно сформировать запрос');
+  }  
+  });
+});
+
+//$(function(){
+//   $("#make_request").bind("click",function(){
+//      alert('нажал');
+//   })
+//})
+
+
+</script>
+
+<style>
+  #url_example {
+    padding: 5px;
+    margin: 5px;
+    border: 2px dotted;
+    opacity: 0.5;
+  }
+
+  #params_string {
+  max-width: 600px;  
+  max-height: 300px;   
+  width: 260px;  
+  height: 150px;  
+  min-width: 100px;  
+  min-height: 100px;
+  }
+</style>
+
+
+
+<% partners_array = @partners.map { |item| [item.app_id, item.id] } %>
+<% option =  options_for_select(partners_array, @current_partner_id) %>
+
+<%= form_for(@request, :remote => true) do |f| %>
+  <% if @request.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@request.errors.count, "error") %> prohibited this request from being saved:</h2>
+
+      <ul>
+      <% @request.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+
+<div class = "row-fluid ">
+  <div class="span10 my_center ">
+    <div>Партнер:</div> 
+    <div><%= f.select(:partner_id, option) %> </div>      
+  </div>
+</div>
+
+<div class = "row-fluid ">
+  <div class="span10 my_center ">
+    <div>Ссылка:</div> 
+    <div><%= f.text_field :url, :id=>"url_params"%></div>      
+  </div>
+</div>
+
+<div class = "row-fluid ">
+  <div class="span10 my_center ">
+    <div>Строка параметров:</div>
+    <div id="url_example"><strong>Пример: </strong><small >app_id=CTC4LG&category_id=0&id=undefined</small></div>
+     <div><%= f.text_area :parametres, :id => "params_string" %></div>            
+  </div>
+</div>
+
+<div class = "row-fluid ">
+  <div class="span10 my_center ">
+    <div><%#= link_to "Получить подписанный запрос", "#", :class => "btn", :id => "get_sig" %> </div>        
+    <%= f.submit "Получить подписанный запрос", :class=>'btn' %>
+  </div>
+</div>
+
+<hr/>
+
+<div class = "row-fluid ">
+  <div class="span10 my_center ">
+  <p class="lead">
+    Итоговый запрос с подписью:
+  </p>
+    <strong><div id="out_request_sign"></div></strong> 
+  </div>
+</div>
+<% end %>
+<br/>
+
+
+<div class = "row-fluid ">
+  <div class="span10 my_center ">
+  <%= button_tag "Сделать запрос",  
+      :class => 'btn',
+      :id => 'make_request',
+      :disabled => false %>
+</div>
+
+
+<br/>
+
+<div class = "row-fluid ">
+  <div class="span10 my_center ">
+  <div id="get_out_request"></div>
+</div>
+
+<script>
+
+</script>
+
+
+
+

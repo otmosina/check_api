@@ -1,11 +1,13 @@
+# encoding: UTF-8
 class PartnersController < ApplicationController
   # GET /partners
   # GET /partners.json
   def index
+
     @partners = Partner.all
 
     respond_to do |format|
-      format.html # index.html.erb
+      format.html { redirect_to root_path, :notice => 'After redirect' }# index.html.erb
       format.json { render json: @partners }
     end
   end

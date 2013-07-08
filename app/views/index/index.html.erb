@@ -1,11 +1,113 @@
+<!-- Example 
+<select id="partner_app_id" name="partner[app_id]"><option value="1" data-secret="1">1</option>
+<option value="2" data-secret="2">2</option>
+-->
 <script>
+
+function signature(params_str,secret){
+
+  mas = []	
+  mas = params_str.split("&");
+   
+  //for (var p in params){
+  //	if (p != "format" && p != "controller" && p != "action" && p != "sig" ) {
+  //		mas.push(p+"="+params[p])
+  //	}
+  //}
+  mas.sort();
+  var result_str = mas.join('&')+secret;
+  var result_signature = hex_md5(result_str);
+  return result_signature;
+}
+
 $(function(){
-	alert('Привет');
+	$("#get_sig").click(function(){	
+
+  app_id =  $("#partner_app_id option:selected").html();  
+
+	secret = $("#partner_app_id option:selected").attr("data-secret");
+	url = $("#url_params").val();
+	params = $("#params_string").val(); 
+  if (params.length == 0) {
+      params = "app_id="+app_id+params;
+  } else {
+      params = "app_id="+app_id+'&'+params;
+  }
+
+	sig = signature(params, secret)
+  
+	result_request = url+'?'+params+'&sig='+sig	
+	
+	//ert('Привет');
+    $(".out_request").html(result_request);
+    });
+
 })
 </script>
 
-<h1><%= @message %></h1>
+<style>
+  #url_example {
+  	padding: 5px;
+  	margin: 5px;
+  	border: 2px dotted;
+  	opacity: 0.5;
+  }
+</style>
 
+<div class = "row-fluid">
+  <div class="my_center">
+    <h1>Формирование запроса к апи с подписью</h1>
+  </div>
+</div>
+
+<hr/>
+
+
+<% partners_array = @partners.map { |item| [item.app_id, item.id, {"data-secret" => item.secret}] } %>
+<% option =  options_for_select(partners_array, @current_partner_id) %>
+
+<div class = "row-fluid ">
+  <div class="span10 my_center ">
+    <div>Партнер:</div> 
+    <div><%= select(:partner, :app_id, option) %> </div>  		
+  </div>
+</div>
+
+<div class = "row-fluid ">
+  <div class="span10 my_center ">
+    <div>Ссылка:</div> 
+    <div><%= text_field_tag "","", :id=>"url_params"%></div>   		
+  </div>
+</div>
+
+<div class = "row-fluid ">
+  <div class="span10 my_center ">
+  	<div>Строка параметров:</div>
+  	<div id="url_example"><strong>Пример: </strong><small >app_id=CTC4LG&category_id=0&id=undefined</small></div>
+     <div><%= text_area_tag "","", :id => "params_string" %></div>        		
+  </div>
+</div>
+
+<div class = "row-fluid ">
+  <div class="span10 my_center ">
+  	<div><%= link_to "Получить подписанный запрос", "#", :class => "btn", :id => "get_sig" %> </div>     		
+  </div>
+</div>
+
+<hr/>
+
+<div class = "row-fluid ">
+  <div class="span10 my_center ">
+	<p class="lead">
+	  Итоговый запрос с подписью:
+	</p>
+	  <strong><div class="out_request">123</div></strong>	
+  </div>
+</div>  	
+
+
+
+<!--
 <div class="req url">
   <%= text_field_tag "input" %>
 </div>
@@ -17,3 +119,4 @@ $(function(){
 <div class="req sig">
 
 </div>	
+-->
