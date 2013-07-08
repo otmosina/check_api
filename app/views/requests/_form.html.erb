@@ -44,11 +44,16 @@ $(function(){
 $(function(){
   $("#make_request").click(function(){
   full_request_with_sign = $("#out_request_sign").html();
+
+  full_request_with_sign = full_request_with_sign.replace(/\r/,'');
+  full_request_with_sign = full_request_with_sign.replace(/\n/,'');   
+  full_request_with_sign = full_request_with_sign.replace(/amp;/g,'')
+  encode_full_request_with_sign = encodeURIComponent(full_request_with_sign)
   if  (full_request_with_sign.length > 2) {  
     $.ajax({
       Datatype: 'json',
-      type: 'GET',
-      data: "url_request_param=http://videomore.ru/api/projects.json?app_id=dunefcc44a6506c200ff7731acd789af9d3d",      
+      type: 'POST',
+      data: "url_request_param="+encode_full_request_with_sign, ///"url_request_param="+full_request_with_sign,//      
       url: "<%= request_get_out_request_path %>",
       complete: function(data){
         $("#get_out_request").html(data.responseText);
@@ -142,7 +147,7 @@ $(function(){
   <p class="lead">
     Итоговый запрос с подписью:
   </p>
-    <strong><div id="out_request_sign"></div></strong> 
+    <strong><div id="out_request_sign" style="white-space:nowrap"></div></strong> 
   </div>
 </div>
 <% end %>
@@ -158,11 +163,11 @@ $(function(){
 </div>
 
 
-<br/>
+<br/><br/>
 
 <div class = "row-fluid ">
   <div class="span10 my_center ">
-  <div id="get_out_request"></div>
+  <div id="get_out_request" style="word-wrap: break-word"></div>
 </div>
 
 <script>

@@ -104,9 +104,10 @@ class RequestsController < ApplicationController
   end
 
   def get_out_request
-    url_request = params[:url_request_param]
+    require "cgi"    
+    url_request = CGI::unescape(params[:url_request_param])
     if url_request
-      uri = URI.parse(url_request)
+      uri = URI.parse(url_request) 
       @responce_after_get_out_request=Net::HTTP.get(uri)
     else
       @responce_after_get_out_request = "get uncorrect url"

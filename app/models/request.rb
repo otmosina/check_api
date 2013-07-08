@@ -3,7 +3,7 @@ class Request < ActiveRecord::Base
 
   belongs_to :partner
 
-  validates :parametres, :presence => true
+  #validates :parametres, :presence => true
 
 
   def signature(parametres, secret)
@@ -17,6 +17,7 @@ class Request < ActiveRecord::Base
 
   def make_parametres_str_in_hash
   	hash = {}
+  	hash['app_id']=self.partner.app_id
   	self.parametres.split('&').each do |item|
   	  hash_key = item.split('=')[0]
   	  hash_val = item.split('=')[1]  	  	
@@ -26,7 +27,8 @@ class Request < ActiveRecord::Base
   end	
 
   def get_full_request
-  	self.url.to_s + '?' + parametres.to_s + '&sig='  + self.signature(self.make_parametres_str_in_hash, self.partner.secret).to_s
+  	str_parametres = parametres.to_s.blank? ? "" : '&'+parametres.to_s   
+  	"http://"+self.url.to_s + '?' + 'app_id='+partner.app_id + str_parametres + '&sig='  + self.signature(self.make_parametres_str_in_hash, self.partner.secret).to_s
   end	
 
 

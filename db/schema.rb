@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130708081020) do
+ActiveRecord::Schema.define(:version => 20130708124645) do
 
   create_table "partners", :force => true do |t|
     t.string   "app_id"
@@ -24,8 +24,9 @@ ActiveRecord::Schema.define(:version => 20130708081020) do
     t.integer  "partner_id"
     t.string   "url"
     t.string   "parametres"
-    t.datetime "created_at", :null => false
-    t.datetime "updated_at", :null => false
+    t.datetime "created_at",                :null => false
+    t.datetime "updated_at",                :null => false
+    t.integer  "count_open", :default => 0
   end
 
 end
