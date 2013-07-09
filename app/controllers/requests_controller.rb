@@ -1,6 +1,15 @@
 class RequestsController < ApplicationController
+  include ActionView::Helpers::SanitizeHelper
+
+  before_filter :get_history, :only => [:new]
+
   # GET /requests
   # GET /requests.json
+
+  def get_history
+    @request_history = Request.history_request
+  end  
+
   def index
     @requests = Request.all
 
@@ -24,6 +33,7 @@ class RequestsController < ApplicationController
   # GET /requests/new
   # GET /requests/new.json
   def new
+
 
     @current_partner_id = session[:current_partner_id] || Partner.where(:app_id => 'html5_vm').first.id 
     @partners = Partner.all
@@ -55,10 +65,18 @@ class RequestsController < ApplicationController
 
 
     #params[:request] = {"partner_id"=>"1", "url"=>"", "parametres"=>""}
-    @request = Request.new(params[:request])
+
+    @request = Request.where(params[:request]).first
+    if @request
+      @request.incr_count
+    else  
+      @request = Request.new(params[:request])
+      @request.save
+    end  
+
     @full_request = @request.get_full_request
     respond_to do |format|
-      if @request.save
+      if @request
 
         session[:partner_id]=params[:request][:partner_id]
         session[:url]       =params[:request][:url]
@@ -104,11 +122,18 @@ class RequestsController < ApplicationController
   end
 
   def get_out_request
-    require "cgi"    
+    require "cgi"
+    require "net/http"    
     url_request = CGI::unescape(params[:url_request_param])
     if url_request
       uri = URI.parse(url_request) 
       @responce_after_get_out_request=Net::HTTP.get(uri)
+      #Убирать все html-теги
+      #@responce_after_get_out_request = strip_tags(@responce_after_get_out_request) 
+      @responce_after_get_out_request = CGI::escapeHTML @responce_after_get_out_request 
+
+
+
     else
       @responce_after_get_out_request = "get uncorrect url"
     end  

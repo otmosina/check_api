@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130708124645) do
+ActiveRecord::Schema.define(:version => 20130709072600) do
 
   create_table "partners", :force => true do |t|
     t.string   "app_id"
@@ -21,12 +21,14 @@ ActiveRecord::Schema.define(:version => 20130708124645) do
   end
 
   create_table "requests", :force => true do |t|
-    t.integer  "partner_id"
-    t.string   "url"
-    t.string   "parametres"
+    t.integer  "partner_id",                :null => false
+    t.string   "url",                       :null => false
+    t.string   "parametres",                :null => false
     t.datetime "created_at",                :null => false
     t.datetime "updated_at",                :null => false
-    t.integer  "count_open", :default => 0
+    t.integer  "count_make", :default => 0
   end
+
+  add_index "requests", ["partner_id", "parametres", "url"], :name => "index_requests_on_partner_id_and_parametres_and_url", :unique => true
 
 end

@@ -15,35 +15,10 @@ function signature(params_str,secret){
   return result_signature;
 }
 
-  /*
-$(function(){
-  $("#get_sig").click(function(){ 
-
-  app_id =  $("#partner_app_id option:selected").html();  
-
-  secret = $("#partner_app_id option:selected").attr("data-secret");
-  url = $("#url_params").val();
-  params = $("#params_string").val(); 
-  if (params.length == 0) {
-      params = "app_id="+app_id+params;
-  } else {
-      params = "app_id="+app_id+'&'+params;
-  }
-
-  sig = signature(params, secret)
-  
-  result_request = url+'?'+params+'&sig='+sig 
-  
-    $("#out_request").html(result_request);
-    });
-
-})
-*/
 
 
-$(function(){
-  $("#make_request").click(function(){
-  full_request_with_sign = $("#out_request_sign").html();
+function makeRequest(url) {
+  full_request_with_sign = url;
 
   full_request_with_sign = full_request_with_sign.replace(/\r/,'');
   full_request_with_sign = full_request_with_sign.replace(/\n/,'');   
@@ -57,12 +32,36 @@ $(function(){
       url: "<%= request_get_out_request_path %>",
       complete: function(data){
         $("#get_out_request").html(data.responseText);
+        //$("#get_out_request").html(data.responseText);
       } 
     });
   }  else {
     alert('Нужно сформировать запрос');
   }  
+}
+
+
+$(function(){
+  $("#make_request").click(function(){
+    makeRequest($("#out_request_sign").html()); 
   });
+
+
+   $("ul li").mouseover(function(){
+    $(this).addClass("with_pointer");    
+
+   });
+   $("ul li").mouseout(function(){
+      $(this).removeClass("with_pointer"); 
+   } );  
+
+  $("ul li").click(function(){
+    history_request_item = $(this).html()
+    $("#out_request_sign").html(history_request_item);     
+    makeRequest(history_request_item);
+  })
+
+
 });
 
 //$(function(){
@@ -111,30 +110,36 @@ $(function(){
   <% end %>
 
 
-<div class = "row-fluid ">
-  <div class="span10 my_center ">
+<div class = "row-fluid">
+  <div class="span8">
+
+
+
+
+<div class = "row-fluid">
+  <div class="span12 my_center ">
     <div>Партнер:</div> 
     <div><%= f.select(:partner_id, option) %> </div>      
   </div>
 </div>
 
 <div class = "row-fluid ">
-  <div class="span10 my_center ">
+  <div class="span12 my_center ">
     <div>Ссылка:</div> 
-    <div><%= f.text_field :url, :id=>"url_params"%></div>      
+    <div><%= f.text_field :url, :id=>"url_params", :placeholder => "videomore.ru/api/projects.json"%></div>      
   </div>
 </div>
 
 <div class = "row-fluid ">
-  <div class="span10 my_center ">
+  <div class="span12 my_center ">
     <div>Строка параметров:</div>
     <div id="url_example"><strong>Пример: </strong><small >app_id=CTC4LG&category_id=0&id=undefined</small></div>
-     <div><%= f.text_area :parametres, :id => "params_string" %></div>            
+     <div><%= f.text_area :parametres, :id => "params_string", :placeholder => "category_id=0&id=undefined&project_id=57" %></div>            
   </div>
 </div>
 
 <div class = "row-fluid ">
-  <div class="span10 my_center ">
+  <div class="span12 my_center ">
     <div><%#= link_to "Получить подписанный запрос", "#", :class => "btn", :id => "get_sig" %> </div>        
     <%= f.submit "Получить подписанный запрос", :class=>'btn' %>
   </div>
@@ -143,7 +148,7 @@ $(function(){
 <hr/>
 
 <div class = "row-fluid ">
-  <div class="span10 my_center ">
+  <div class="span12 my_center ">
   <p class="lead">
     Итоговый запрос с подписью:
   </p>
@@ -155,24 +160,37 @@ $(function(){
 
 
 <div class = "row-fluid ">
-  <div class="span10 my_center ">
+  <div class="span12 my_center ">
   <%= button_tag "Сделать запрос",  
       :class => 'btn',
       :id => 'make_request',
       :disabled => false %>
+  </div>      
 </div>
 
 
 <br/><br/>
 
 <div class = "row-fluid ">
-  <div class="span10 my_center ">
+  <div class="span12 my_center ">
   <div id="get_out_request" style="word-wrap: break-word"></div>
+  </div>
 </div>
 
-<script>
+</div>
+<div class="span4">
+  <strong>История запросов:</strong>
+  <br><br>
+  <div id="history_request" style="word-wrap: break-word">
+    <ul>
+    <% @request_history.map do |item_history| %>  
+      <li class=""> <%= item_history.get_full_request.html_safe %> 
+    <% end %>  
+    </ul>
+  </div>  
+</div>  
 
-</script>
+</div>
 
 
 

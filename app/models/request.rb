@@ -31,5 +31,15 @@ class Request < ActiveRecord::Base
   	"http://"+self.url.to_s + '?' + 'app_id='+partner.app_id + str_parametres + '&sig='  + self.signature(self.make_parametres_str_in_hash, self.partner.secret).to_s
   end	
 
+  def incr_count
+    self.count_make += 1
+    self.save
+  end  
+
+  def self.history_request
+    range_updated = Time.now - 3.day
+    where('updated_at > ?', range_updated)
+  end  
+
 
 end

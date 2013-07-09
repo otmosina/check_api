@@ -33,3 +33,8 @@
   opacity: 1;
 
 }
+
+.with_pointer {
+  cursor: pointer;
+  border: 4px Solid rgba(0,0,0,0.1);	
+}
