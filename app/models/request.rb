@@ -38,7 +38,7 @@ class Request < ActiveRecord::Base
 
   def self.history_request
     range_updated = Time.now - 3.day
-    where('updated_at > ?', range_updated)
+    where('updated_at > ?', range_updated).order('updated_at DESC').limit(7)
   end  
 
 

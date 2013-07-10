@@ -24,7 +24,7 @@ function makeRequest(url) {
   full_request_with_sign = full_request_with_sign.replace(/\n/,'');   
   full_request_with_sign = full_request_with_sign.replace(/amp;/g,'')
   encode_full_request_with_sign = encodeURIComponent(full_request_with_sign)
-  if  (full_request_with_sign.length > 2) {  
+  if  (full_request_with_sign.length > 2) { 
     $.ajax({
       Datatype: 'json',
       type: 'POST',
@@ -164,6 +164,7 @@ $(function(){
   <%= button_tag "Сделать запрос",  
       :class => 'btn',
       :id => 'make_request',
+      :type => "button",
       :disabled => false %>
   </div>      
 </div>
