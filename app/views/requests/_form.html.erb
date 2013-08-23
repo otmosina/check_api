@@ -89,12 +89,52 @@ $(function(){
   min-width: 100px;  
   min-height: 100px;
   }
+
+/* модальные диалоги */
+div.modal{
+  display: none;
+  z-index:10000;
+  background:url('/pkayer_dialog.png') no-repeat left top;
+  padding:20px 20px 20px 30px;
+  width:370px;  
+  height:246px;
+
+}
+
+div.modal {color:#fff;font-size:12px; font-family:Franklin Gothic Medium, Arial, sans-serif;}
+div.modal h2 {color:#fff; font-size:16px; font-family:Franklin Gothic Medium, Arial, sans-serif;margin:0px; font-weight:normal; margin-bottom:10px;}
+div.modal textarea {color:#fff; font-size:12px; font-family:Franklin Gothic Medium, Arial, sans-serif; background:url('/player_dialog_textarea.png') no-repeat left top; width:353px; height:50px; border:0px; padding:4px; margin-bottom:8px; resize:none;}
+div.modal input[type="submit"] {background:url('/save.png') no-repeat left top; width:106px; height:35px; border:0px; cursor:pointer;}
+div.modal input:hover {background-position:left -35px;}
+div.modal input:active {background-position:left -70px;}
+
+div.modal a,div.modal a:visited {color: #99ccff; text-decoration: none;}
+div.modal a:hover{text-decoration: underline; }
+
+div.modal a.close {background:url('/close_white.png') no-repeat left top; width:15px; height:15px; float:right; margin-right:3px; cursor:pointer;}
+div.modal a.close:hover {background-position:left -15px;}
+}
+
 </style>
 
 
 
 <% partners_array = @partners.map { |item| [item.app_id, item.id] } %>
 <% option =  options_for_select(partners_array, @current_partner_id) %>
+<script>
+$(function(){
+  $('#check_overlay').click(function(){
+    //alert('Подгружаем шаблоны');
+    $('#show_seo_templates').html("sadasdas ");    
+    $('#show_seo_templates').overlay({top: 200, closeOnClick: true, oneInstance: false});
+    $('#show_seo_templates').overlay().load();
+  })
+})
+
+</script>
+
+<%#= submit_tag 'Попробовать overlay', :id => "check_overlay", :type => "button" %>
+<div id="show_seo_templates" class="modal"><a class="close"></a></div>
 
 <%= form_for(@request, :remote => true) do |f| %>
   <% if @request.errors.any? %>
@@ -174,7 +214,7 @@ $(function(){
 
 <div class = "row-fluid ">
   <div class="span12 my_center ">
-  <div id="get_out_request" style="word-wrap: break-word"></div>
+  <div id="get_out_request" style="word-wrap: break-word"></div> <!-- break-word -->
   </div>
 </div>
 
